@@ -1,5 +1,5 @@
 import { Flame, Zap, Trophy } from "lucide-react";
-import { auraStatus, levelBounds } from "@/gamification";
+import { auraStatus, getLocalDateString, levelBounds } from "@/gamification";
 import type { GamificationState } from "@/types";
 import { AnimatedNumber } from "@/components/AnimatedNumber";
 
@@ -19,7 +19,7 @@ export function AuraHero({
   const status = auraStatus(game.aura);
   const { level, current, needed } = levelBounds(game.aura);
   const pct = Math.min(100, Math.round((current / needed) * 100));
-  const completedToday = today === new Date().toISOString().slice(0, 10);
+  const today = getLocalDateString();
 
   return (
     <section
@@ -140,7 +140,7 @@ export function AuraHero({
         </div>
 
         {/* Streak motivation */}
-        {game.streak > 0 && !completedToday && todayPending > 0 && (
+        {game.streak > 0 && todayCompleted === 0 && todayPending > 0 && (
           <p className="mt-3 text-center text-xs font-semibold text-amber-300/60 sm:text-left">
             One quest today keeps the streak alive.
           </p>
