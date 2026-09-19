@@ -177,12 +177,17 @@ export function achievementById(id: AchievementId): Achievement | undefined {
   return ACHIEVEMENTS.find((a) => a.id === id);
 }
 
-export function todayStr(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
-    2,
-    "0"
-  )}-${String(d.getDate()).padStart(2, "0")}`;
+/** Returns a YYYY-MM-DD string based on the user's LOCAL timezone. */
+export function getLocalDateString(date: Date = new Date()): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+/** Extract a local YYYY-MM-DD from a timestamp without UTC conversion. */
+export function localDateFromTimestamp(ts: number): string {
+  return getLocalDateString(new Date(ts));
 }
 
 function daysBetween(a: string, b: string): number {

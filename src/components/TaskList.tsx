@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { ClipboardList, SearchX, Sparkles } from "lucide-react";
 import type { Priority, Task } from "@/types";
 import { TaskCard } from "@/components/TaskCard";
@@ -19,7 +19,6 @@ export function TaskList({
   onDelete,
   onAddFirst,
 }: Props) {
-  // Stable roast per pending task id (re-randomized on each render cycle but keyed by id)
   const roasts = useMemo(() => {
     const map: Record<string, string> = {};
     for (const t of tasks) {
@@ -30,14 +29,13 @@ export function TaskList({
 
   if (tasks.length === 0) {
     return (
-      <div className="card flex flex-col items-center justify-center px-6 py-12 text-center animate-rise">
-        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-600/20">
-          <ClipboardList className="h-7 w-7 text-violet-300" />
+      <div className="card flex flex-col items-center justify-center px-6 py-14 text-center animate-rise">
+        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-violet-500/20 bg-violet-600/10 glow-violet">
+          <ClipboardList className="h-8 w-8 text-violet-300" />
         </div>
-        <h3 className="text-lg font-bold text-white">NO QUESTS YET 👀</h3>
-        <p className="mt-1 max-w-xs text-sm text-zinc-400">
-          Your productivity arc starts here. Add your first task and start
-          farming Aura.
+        <h3 className="text-lg font-black text-white">NO QUESTS YET 👀</h3>
+        <p className="mt-1.5 max-w-xs text-sm text-zinc-400">
+          Your aura arc starts here. Drop your first quest and start farming.
         </p>
         <button className="btn-primary mt-5" onClick={onAddFirst}>
           <Sparkles className="h-4 w-4" /> Add First Quest
@@ -62,18 +60,19 @@ export function TaskList({
   );
 }
 
-export function NoMatches() {
+export function NoMatches({ onClear }: { onClear: () => void }) {
   return (
-    <div className="card flex flex-col items-center justify-center px-6 py-10 text-center animate-rise">
-      <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-white/5">
-        <SearchX className="h-6 w-6 text-zinc-400" />
+    <div className="card flex flex-col items-center justify-center px-6 py-12 text-center animate-rise">
+      <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/5 bg-white/[0.03]">
+        <SearchX className="h-7 w-7 text-zinc-400" />
       </div>
-      <h3 className="text-base font-bold text-white">NO MATCHES 💀</h3>
+      <h3 className="text-base font-black text-white">NO MATCHES 💀</h3>
       <p className="mt-1 max-w-xs text-sm text-zinc-400">
-        Nothing fits that filter. Try changing your search or filters.
+        Nothing in this category. Try changing your search or filters.
       </p>
+      <button className="btn-ghost mt-4 text-xs" onClick={onClear}>
+        Clear filters
+      </button>
     </div>
   );
 }
-
-export type { Priority };

@@ -15,7 +15,7 @@
 
   body {
     margin: 0;
-    background-color: #07070b;
+    background-color: #06060c;
     color: #f4f4f5;
     font-family: Inter, ui-sans-serif, system-ui, -apple-system,
       BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -27,7 +27,6 @@
     box-sizing: border-box;
   }
 
-  /* Visible focus states */
   :focus-visible {
     outline: 2px solid #a78bfa;
     outline-offset: 2px;
@@ -40,11 +39,26 @@
   textarea {
     font: inherit;
   }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(167, 139, 250, 0.2);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(167, 139, 250, 0.35);
+  }
 }
 
 @layer components {
   .aura-chip {
-    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider;
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider;
   }
 
   .btn {
@@ -52,7 +66,7 @@
   }
 
   .btn-primary {
-    @apply btn bg-violet-600 text-white hover:bg-violet-500 active:scale-[0.98];
+    @apply btn bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-[0_0_20px_-4px_rgba(167,139,250,0.6)] hover:shadow-[0_0_28px_-2px_rgba(167,139,250,0.8)] hover:brightness-110 active:scale-[0.97];
   }
 
   .btn-ghost {
@@ -64,19 +78,23 @@
   }
 
   .card {
-    @apply rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-sm;
+    @apply rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-md;
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:border-white/[0.15] hover:bg-white/[0.05];
   }
 
   .input {
-    @apply w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-zinc-500 focus:border-violet-400/60 focus:outline-none;
+    @apply w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-zinc-500 transition-colors focus:border-violet-400/60 focus:outline-none focus:ring-1 focus:ring-violet-400/30;
   }
 
   .seg {
-    @apply rounded-lg px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition-all duration-200;
+    @apply rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-wide transition-all duration-200;
   }
 
   .seg-active {
-    @apply bg-violet-600 text-white shadow-[0_0_12px_-2px_rgba(167,139,250,0.7)];
+    @apply bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-[0_0_14px_-2px_rgba(167,139,250,0.7)];
   }
 
   .seg-idle {
@@ -86,44 +104,71 @@
 
 @layer utilities {
   .glow-violet {
-    box-shadow: 0 0 40px -12px rgba(167, 139, 250, 0.55);
+    box-shadow: 0 0 50px -12px rgba(167, 139, 250, 0.6);
   }
   .glow-cyan {
     box-shadow: 0 0 40px -12px rgba(34, 211, 238, 0.5);
   }
+  .glow-amber {
+    box-shadow: 0 0 30px -8px rgba(251, 191, 36, 0.5);
+  }
   .text-glow {
-    text-shadow: 0 0 18px rgba(167, 139, 250, 0.6);
+    text-shadow: 0 0 24px rgba(167, 139, 250, 0.6);
+  }
+  .text-glow-cyan {
+    text-shadow: 0 0 18px rgba(34, 211, 238, 0.5);
+  }
+  .text-glow-amber {
+    text-shadow: 0 0 16px rgba(251, 191, 36, 0.5);
+  }
+
+  .grid-bg {
+    background-image:
+      linear-gradient(rgba(167, 139, 250, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(167, 139, 250, 0.04) 1px, transparent 1px);
+    background-size: 32px 32px;
   }
 
   .animate-rise {
-    animation: rise 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: rise 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
-
   .animate-pop {
-    animation: pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    animation: pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
   }
-
   .animate-slide-in {
     animation: slideIn 0.3s ease-out both;
   }
-
   .animate-toast {
     animation: toastIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
-
   .animate-bar {
-    animation: barGrow 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: barGrow 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
-
   .animate-strike {
-    animation: strike 0.3s ease-out both;
+    animation: strike 0.35s ease-out both;
+  }
+  .animate-pulse-glow {
+    animation: pulseGlow 2.5s ease-in-out infinite;
+  }
+  .animate-float-up {
+    animation: floatUp 1s ease-out both;
+  }
+  .animate-shimmer {
+    animation: shimmer 3s linear infinite;
+    background-size: 200% 100%;
+  }
+  .animate-flame {
+    animation: flame 1.8s ease-in-out infinite;
+  }
+  .animate-aura-pulse {
+    animation: auraPulse 0.7s ease-out;
   }
 }
 
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -133,11 +178,11 @@
 
 @keyframes pop {
   0% {
-    transform: scale(0.92);
+    transform: scale(0.9);
     opacity: 0;
   }
   60% {
-    transform: scale(1.03);
+    transform: scale(1.04);
   }
   100% {
     transform: scale(1);
@@ -148,7 +193,7 @@
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateX(-10px);
+    transform: translateX(-12px);
   }
   to {
     opacity: 1;
@@ -159,7 +204,7 @@
 @keyframes toastIn {
   from {
     opacity: 0;
-    transform: translateY(16px) scale(0.96);
+    transform: translateY(20px) scale(0.94);
   }
   to {
     opacity: 1;
@@ -179,6 +224,62 @@
   }
   to {
     background-size: 100% 2px;
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes floatUp {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.8);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(-10px) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-60px) scale(0.9);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes flame {
+  0%, 100% {
+    transform: scale(1) rotate(-2deg);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.08) rotate(2deg);
+    opacity: 1;
+  }
+}
+
+@keyframes auraPulse {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
   }
 }
 

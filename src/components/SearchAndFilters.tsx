@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+import { Search, SlidersHorizontal } from "lucide-react";
 import type { Priority } from "@/types";
 
 export type StatusFilter = "all" | "active" | "completed";
@@ -16,7 +16,7 @@ type Props = {
 const STATUS_OPTIONS: { value: StatusFilter; label: string }[] = [
   { value: "all", label: "All" },
   { value: "active", label: "Active" },
-  { value: "completed", label: "Completed" },
+  { value: "completed", label: "Done" },
 ];
 
 const PRIORITY_OPTIONS: { value: PriorityFilter; label: string }[] = [
@@ -36,26 +36,26 @@ export function SearchAndFilters({
 }: Props) {
   return (
     <section
-      className="card flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:gap-4 sm:p-4"
+      className="card flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:gap-3 sm:p-4"
       aria-label="Search and filters"
     >
       <div className="relative flex-1">
         <label htmlFor="task-search" className="sr-only">
           Search your quests
         </label>
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-violet-400/60" />
         <input
           id="task-search"
           type="search"
           className="input pl-9"
-          placeholder="Search your quests..."
+          placeholder="Search quests..."
           value={search}
           onChange={(e) => onSearch(e.target.value)}
         />
       </div>
 
       <div
-        className="flex items-center gap-1 self-start rounded-xl bg-white/5 p-1 sm:self-auto"
+        className="flex items-center gap-1 self-start rounded-xl bg-white/[0.04] p-1 sm:self-auto"
         role="group"
         aria-label="Status filter"
       >
@@ -74,7 +74,8 @@ export function SearchAndFilters({
         ))}
       </div>
 
-      <div className="self-start sm:self-auto">
+      <div className="flex items-center gap-2 self-start sm:self-auto">
+        <SlidersHorizontal className="hidden h-4 w-4 shrink-0 text-zinc-500 sm:block" />
         <label htmlFor="priority-filter" className="sr-only">
           Priority filter
         </label>

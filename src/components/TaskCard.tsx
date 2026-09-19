@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { Check, Pencil, Trash2, X } from "lucide-react";
+import { Check, Pencil, Trash2, X, Zap } from "lucide-react";
 import type { Priority, Task } from "@/types";
-import { PRIORITY_AURA, completionReaction, pendingReaction } from "@/gamification";
+import { PRIORITY_AURA, completionReaction } from "@/gamification";
 
 type Props = {
   task: Task;
@@ -13,22 +13,25 @@ type Props = {
 
 const PRIORITY_STYLES: Record<
   Priority,
-  { badge: string; dot: string; label: string }
+  { badge: string; dot: string; label: string; ring: string }
 > = {
   high: {
-    badge: "bg-red-500/20 text-red-300 border border-red-500/30",
+    badge: "bg-red-500/15 text-red-300 border border-red-500/25",
     dot: "bg-red-400",
     label: "HIGH",
+    ring: "hover:border-red-500/20",
   },
   medium: {
-    badge: "bg-amber-500/20 text-amber-300 border border-amber-500/30",
+    badge: "bg-amber-500/15 text-amber-300 border border-amber-500/25",
     dot: "bg-amber-400",
     label: "MEDIUM",
+    ring: "hover:border-amber-500/20",
   },
   low: {
-    badge: "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30",
+    badge: "bg-cyan-500/15 text-cyan-300 border border-cyan-500/25",
     dot: "bg-cyan-400",
     label: "LOW",
+    ring: "hover:border-cyan-500/20",
   },
 };
 
@@ -38,6 +41,7 @@ export function TaskCard({ task, onToggle, onEdit, onDelete, roast }: Props) {
   const [editPriority, setEditPriority] = useState<Priority>(task.priority);
   const [editError, setEditError] = useState("");
   const [reaction, setReaction] = useState("");
+  const [completing, setCompleting] = useState(false);
   const editInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -70,7 +74,7 @@ export function TaskCard({ task, onToggle, onEdit, onDelete, roast }: Props) {
 
   if (editing) {
     return (
-      <li className="card animate-pop p-4">
+      <li className="card animate-pop p-4 border-violet-500/20">
         <form onSubmit={saveEdit} className="space-y-3">
           <div className="flex flex-col gap-3 sm:flex-row">
             <input
@@ -119,8 +123,15 @@ export function TaskCard({ task, onToggle, onEdit, onDelete, roast }: Props) {
   }
 
   return (
-    <li className="card animate-rise group p-4 transition-colors duration-200 hover:border-white/20">
+    <li
+      className={`card card-hover animate-rise group p-4 ${
+        task.completed
+          ? "border-emerald-500/15 bg-emerald-500/[0.02]"
+          : style.ring
+      }`}
+    >
       <div className="flex items-start gap-3">
+        {/* Completion control */}
         <button
           type="button"
           role="checkbox"
@@ -131,48 +142,53 @@ export function TaskCard({ task, onToggle, onEdit, onDelete, roast }: Props) {
               : `Mark "${task.title}" as done`
           }
           onClick={() => {
-            setReaction(
-              task.completed ? "" : completionReaction(reaction || undefined)
-            );
+            if (!task.completed) {
+              setReaction(completionReaction(reaction || undefined));
+              setCompleting(true);
+              setTimeout(() => setCompleting(false), 700);
+            } else {
+              setReaction("");
+            }
             onToggle(task.id);
           }}
-          className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md border-2 transition-all duration-200 ${
+          className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border-2 transition-all duration-200 ${
             task.completed
-              ? "border-emerald-400 bg-emerald-400 text-zinc-900"
-              : "border-zinc-600 bg-transparent hover:border-violet-400"
-          }`}
+              ? "border-emerald-400 bg-emerald-400 text-zinc-900 shadow-[0_0_12px_-2px_rgba(52,211,153,0.6)]"
+              : "border-zinc-600 bg-transparent hover:border-violet-400 hover:bg-violet-500/10"
+          } ${completing ? "animate-pop" : ""}`}
         >
           {task.completed && <Check className="h-4 w-4" strokeWidth={3} />}
         </button>
 
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <p
-              className={`text-sm font-semibold leading-snug sm:text-base ${
-                task.completed
-                  ? "text-zinc-500 line-through decoration-zinc-600"
-                  : "text-white"
-              }`}
-            >
-              {task.title}
-            </p>
-          </div>
+          {/* Title */}
+          <p
+            className={`text-sm font-semibold leading-snug sm:text-[15px] ${
+              task.completed
+                ? "text-zinc-500 line-through decoration-zinc-600"
+                : "text-white"
+            }`}
+          >
+            {task.title}
+          </p>
 
+          {/* Badges */}
           <div className="mt-2 flex flex-wrap items-center gap-2">
             <span className={`aura-chip ${style.badge}`}>
               <span className={`h-1.5 w-1.5 rounded-full ${style.dot}`} />
               {style.label}
             </span>
             <span className="aura-chip border border-white/10 bg-white/5 text-zinc-300">
+              <Zap className="h-3 w-3 text-violet-400" />
               +{auraValue} AURA
             </span>
             {task.completed ? (
-              <span className="aura-chip bg-emerald-500/15 text-emerald-300">
-                COMPLETED 🔥
+              <span className="aura-chip border border-emerald-500/20 bg-emerald-500/10 text-emerald-300">
+                QUEST COMPLETE
               </span>
             ) : (
               <span
-                className="aura-chip border border-white/5 bg-white/[0.03] text-zinc-500"
+                className="aura-chip border border-white/5 bg-white/[0.02] text-zinc-500"
                 title="Playful nudge"
               >
                 {roast}
@@ -180,6 +196,7 @@ export function TaskCard({ task, onToggle, onEdit, onDelete, roast }: Props) {
             )}
           </div>
 
+          {/* Reaction */}
           {task.completed && reaction && (
             <p className="mt-1.5 animate-slide-in text-xs font-bold text-emerald-300">
               {reaction}
@@ -187,7 +204,8 @@ export function TaskCard({ task, onToggle, onEdit, onDelete, roast }: Props) {
           )}
         </div>
 
-        <div className="flex shrink-0 items-center gap-1">
+        {/* Actions */}
+        <div className="flex shrink-0 items-center gap-1 opacity-60 transition-opacity duration-200 group-hover:opacity-100">
           <button
             type="button"
             className="rounded-lg p-2 text-zinc-400 transition-colors hover:bg-white/10 hover:text-white"
